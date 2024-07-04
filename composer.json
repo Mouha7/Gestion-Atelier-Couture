@@ -1,0 +1,21 @@
+{
+    "name": "macbook/gestion_atelier_couture",
+    "description": "Gestion D'Atelier De Couture",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Macbook\\": "src/",
+            "Macbook\\Controllers\\": "src/controllers/",
+            "Macbook\\Core\\": "src/core/",
+            "Macbook\\Models\\": "src/models/",
+            "Macbook\\Api\\": "src/api/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Seydina Mouhamed Rassoul Sow",
+            "email": "ra.sow25@gmail.com"
+        }
+    ],
+    "require": {}
+}

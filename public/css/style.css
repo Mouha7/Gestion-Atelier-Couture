@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+:root {
+    --color-indigo: #540D6E;
+    --color-red-crayola: #EE4266;
+    --color-honeydew: #F3FCF0;
+    --color-black-olive: #1F271B;
+    --color-sunglow: #FFD23F;
+    --color-white: #ffffff;
+}
+
+.color-indigo {
+    color: var(--color-indigo) !important;
+}
+
+.color-red {
+    color: var(--color-red-crayola) !important;
+}
+
+.color-honeydew {
+    color: var(--color-honeydew) !important;
+}
+
+.color-black {
+    color: var(--color-black-olive) !important;
+}
+
+.color-white {
+    color: var(--color-white) !important;
+}
+
+.color-sunglow {
+    color: var(--color-sunglow) !important;
+}
+
+.border-color-sunglow {
+    border: 2px solid var(--color-sunglow) !important;
+}
+
+.background-color-white {
+    background-color: var(--color-white) !important;
+}
+
+.background-color-indigo {
+    background-color: var(--color-indigo) !important;
+}
+
+.background-color-red {
+    background-color: var(--color-red-crayola) !important;
+}
+
+.background-color-honeydew {
+    background-color: var(--color-honeydew) !important;
+}
+
+.background-color-black {
+    background-color: var(--color-black-olive) !important;
+}
+
+.background-color-sunglow {
+    background-color: var(--color-sunglow) !important;
+}
+
+.hide {
+    display: none;
+}
+
+.show {
+    display: block;
+}
