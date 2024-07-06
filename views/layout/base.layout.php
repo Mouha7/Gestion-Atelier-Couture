@@ -85,6 +85,11 @@ if (Session::get("errors")) {
                                 <img src="<?= WEBROOT ?>icons/article-check.svg" alt="Logo Article">Article Vente
                             </a>
                         </li>
+                        <li class="<?= add_class_hidden_lien('RP') ?>">
+                            <a class="flex pl-5 gap-2 items-center color-honeydew" href="<?= WEBROOT ?>?controller=vente&action=liste">
+                                <img src="<?= WEBROOT ?>icons/article-check.svg" alt="Logo Article">Production Article Vente
+                            </a>
+                        </li>
                         <li>
                             <a href="#" class="flex pl-5 gap-2 items-center color-honeydew" onclick="toggleAccordion('collapseLayoutsProfile')">
                                 <img src="<?= WEBROOT ?>icons/setting.svg" alt="Logo Setting">Paramétrage

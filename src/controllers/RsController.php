@@ -2,17 +2,21 @@
 
 namespace Macbook\Controllers;
 
+use Macbook\Models\PanierModel;
+
 define("LISTE", "controller=rs&action=liste");
 
 use Macbook\Core\Session;
 use Macbook\Core\Validator;
 use Macbook\Core\Controller;
 use Macbook\Core\Autorisation;
+use Macbook\Models\ApproModel;
 use Macbook\Models\ArticleModel;
 use Macbook\Models\UserModel;
 
 class RsController extends Controller
 {
+    private ApproModel $approModel;
     private UserModel $userModel;
     private ArticleModel $articleModel;
     public function __construct()
@@ -23,6 +27,7 @@ class RsController extends Controller
         }
         $this->userModel = new UserModel();
         $this->articleModel = new ArticleModel();
+        $this->approModel = new ApproModel();
         $this->load();
     }
 
@@ -42,8 +47,6 @@ class RsController extends Controller
             } elseif ($_REQUEST["action"] == "delete-rs") {
                 $this->supprimer($_REQUEST["idUser"]);
                 $this->redirectToRouter(LISTE);
-            } elseif ($_REQUEST["action"] == "detail-rs") {
-                $this->details($_REQUEST["idUser"]);
             } elseif ($_REQUEST["action"] == "update-rs") {
                 unset($_REQUEST["action"]);
                 unset($_REQUEST["controller"]);
@@ -53,6 +56,12 @@ class RsController extends Controller
                 $this->listAppro();
             } elseif ($_REQUEST["action"] == "save-appro") {
                 $this->saveAppro();
+                $this->redirectToRouter("controller=rs&action=liste-appro");
+            } elseif ($_REQUEST["action"] == "save-article") {
+                $this->saveArticleInAppro($_REQUEST);
+                $this->redirectToRouter("controller=rs&action=liste-appro");
+            } elseif ($_REQUEST["action"] == "details-appro") {
+                $this->details($_REQUEST);
             }
         }
     }
@@ -62,8 +71,9 @@ class RsController extends Controller
         $this->renderView("../views/rs/liste", ["array" => $this->userModel->findAllInterne(2)]);
     }
 
-    public function listAppro() {
-        $this->renderView("../views/rs/liste.appro", ["array" => $this->articleModel->findAllAppro(), "fours" => $this->userModel->findAllInterne(2), "conf" => $this->articleModel->findAllConfection()]);
+    public function listAppro()
+    {
+        $this->renderView("../views/rs/liste.appro", ["array" => $this->approModel->findAll(), "fours" => $this->userModel->findAllInterne(2), "conf" => $this->articleModel->findAllConfection()]);
     }
 
     private function store(array $data, array $files)
@@ -85,13 +95,28 @@ class RsController extends Controller
         }
     }
 
-    public function saveAppro() {
-
+    public function saveAppro()
+    {
+        $appros = Session::get('panier');
+        $this->approModel->save($appros);
+        $appros->clearPanier();
+        Session::remove('panier');
     }
 
-    private function details($value)
+    public function saveArticleInAppro(array $data)
     {
-        $this->renderView("../views/rs/update", ["rs" => $this->userModel->findOne($value)]);
+        if (!Session::get('panier')) {
+            $panier = new PanierModel;
+        } else {
+            $panier = Session::get('panier');
+        }
+        $panier->addArticle($this->articleModel->findById($data['idArticle']), $data['idUser'], $data['qteAppro'], $data['observations']);
+        Session::add('panier', $panier);
+    }
+
+    private function details(array $data)
+    {
+        $this->renderView("../views/rs/details", ["user" => $this->userModel->findOne($data['idUser']), "details" => $this->approModel->findArticleByAppro($data['idAppro'])]);
     }
 
     private function modify(array $data, array $files)

@@ -2,7 +2,7 @@
 
 namespace Macbook\Models;
 
-class PanierModel
+class PanierVenteModel
 {
     public $fournisseur = null;
     public array $articles = [];

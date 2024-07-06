@@ -8,10 +8,14 @@ use Macbook\Core\Session;
 use Macbook\Core\Validator;
 use Macbook\Core\Controller;
 use Macbook\Core\Autorisation;
+use Macbook\Models\ArticleModel;
 use Macbook\Models\UserModel;
+use Macbook\Models\VenteModel;
 
 class RpController extends Controller
 {
+    private ArticleModel $articleModel;
+    private VenteModel $venteModel;
     private UserModel $userModel;
     public function __construct()
     {
@@ -20,6 +24,8 @@ class RpController extends Controller
             $this->redirectToRouter("controller=security&action=show-form");
         }
         $this->userModel = new UserModel();
+        $this->articleModel = new ArticleModel();
+        $this->venteModel = new VenteModel();
         $this->load();
     }
 
@@ -46,6 +52,13 @@ class RpController extends Controller
                 unset($_REQUEST["controller"]);
                 $this->modify($_REQUEST, $_FILES);
                 $this->redirectToRouter(LISTE);
+            } elseif ($_REQUEST["action"] == "liste-vente") {
+                $this->listVente();
+            } elseif ($_REQUEST["action"] == "save-vente") {
+                $this->saveVente($_REQUEST);
+                $this->redirectToRouter("controller=rp&action=liste-vente");
+            } elseif ($_REQUEST["action"] == "details-vente") {
+                $this->details($_REQUEST);
             }
         }
     }
@@ -53,6 +66,26 @@ class RpController extends Controller
     private function list()
     {
         $this->renderView("../views/rp/liste", ["array" => $this->userModel->findAllInterne(3)]);
+    }
+
+    private function listVente()
+    {
+        $this->renderView("../views/rp/liste.vente", ["array" => $this->venteModel->findAll(), "articles" => $this->articleModel->findAllVente()]);
+    }
+
+    private function saveVente(array $data)
+    {
+        $article = $this->venteModel->findArticleVente($data["idArticle"]);
+
+        if ($article["qteStock"] < $data["qteProd"]) {
+            Validator::isEmpty($data["idArticle"], "article");
+            if (Validator::isValid()) {
+                Validator::add("article", "Erreur, la quantité saisit est supérieur à la quantité restant.");
+                Session::add("errors", Validator::$errors);
+            }
+        } else {
+            $this->venteModel->save($data, $article);
+        }
     }
 
     private function store(array $data, array $files)

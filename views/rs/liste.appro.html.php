@@ -6,7 +6,6 @@ $errors = [];
 if (Session::get("errors")) {
     $errors = Session::get("errors");
 }
-dd($conf);
 ?>
 
 <div class="color-indigo flex justify-between flex-wrap items-center pt-3 pb-2 mb-3 border-b">
@@ -33,7 +32,11 @@ dd($conf);
                                 <select name="idUser" class=" p-2 border rounded w-full" aria-label="Default select example" id="four">
                                     <option selected>...</option>
                                     <?php foreach ($fours as $value) : ?>
-                                        <option value="<?= $value["idUser"] ?>"><?= $value["nom"] ?></option>
+                                        <option <?php
+                                                if (Session::get('panier') != false && Session::get('panier')->fournisseur == $value['idUser']) {
+                                                    echo "selected";
+                                                }
+                                                ?> value="<?= $value["idUser"] ?>"><?= $value["prenom"] ?> <?= $value["nom"] ?></option>
                                     <?php endforeach ?>
                                 </select>
                             </div>
@@ -52,38 +55,48 @@ dd($conf);
                                     <input type="text" id="qteAppro" name="qteAppro" class="mt-1 p-2 border rounded w-full" required />
                                 </div>
                                 <div style="margin-top: 14px;">
+                                    <input type="hidden" name="action" value="save-article">
+                                    <input type="hidden" name="controller" value="rs">
                                     <button type="submit" class="btn background-color-black text-white p-2 rounded">Ajouter</button>
                                 </div>
                             </div>
+                            <?php if (Session::get('panier') != false) : ?>
+                                <div class="mb-3">
+                                    <table class="table-auto w-full bg-white text-indigo rounded">
+                                        <thead>
+                                            <tr>
+                                                <th class="w-1/4 pt-4 text-left">Article</th>
+                                                <th class="w-1/4 pt-4 text-left">Qte</th>
+                                                <th class="w-1/4 pt-4 text-left">Prix</th>
+                                                <nt class="w-1/4 pt-4 text-left">Montant</nt>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach (Session::get('panier')->articles as $value) : ?>
+                                                <tr>
+                                                    <td class="border-t-2 pt-4"><?= $value["libelle"] ?></td>
+                                                    <td class="border-t-2 pt-4"><?= $value["qteAppro"] ?></td>
+                                                    <td class="border-t-2 pt-4"><?= $value["prixAchat"] ?></td>
+                                                    <td class="border-t-2 pt-4"><?= $value["montantArticle"] ?></td>
+                                                </tr>
+                                            <?php endforeach ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="mb-3 w-full flex justify-end items-center">
+                                    Total &nbsp;:&nbsp;<span class="color-red text-xl"><?= Session::get('panier')->total ?> Franc CFA</span>
+                                </div>
+                            <?php endif ?>
                             <div class="mb-3">
-                                <table class="table-auto w-full bg-white text-indigo rounded">
-                                    <thead>
-                                        <tr>
-                                            <th class="w-1/4 pt-4 text-left">Article</th>
-                                            <th class="w-1/4 pt-4 text-left">Qte</th>
-                                            <th class="w-1/4 pt-4 text-left">Prix</th>
-                                            <th class="w-1/4 pt-4 text-left">Montant</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="border-t-2 pt-4">test</td>
-                                            <td class="border-t-2 pt-4">test</td>
-                                            <td class="border-t-2 pt-4">test</td>
-                                            <td class="border-t-2 pt-4">test</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="mb-3 w-full flex justify-end items-center">
-                                Total &nbsp;:&nbsp;<span class="color-red text-xl">10000 Franc CFA</span>
+                                <label for="observations" class="block text-sm font-medium color-indigo">Observations</label>
+                                <textarea id="observations" name="observations" value="<?= Session::get('panier')->observations ?>" class="mt-1 p-2 border rounded w-full"></textarea>
                             </div>
                         </form>
                         <div class="flex justify-end border-t p-4">
                             <input type="hidden" name="controller" value="rs">
                             <input type="hidden" name="action" value="save-appro">
                             <button type="button" class="btn background-color-indigo text-white p-2 rounded mr-2" onclick="closeModal('modal')">Fermer</button>
-                            <button type="submit" class="btn background-color-black text-white p-2 rounded">Enregistrer</button>
+                            <a href="<?= WEBROOT ?>?controller=rs&action=save-appro" class="btn background-color-black text-white p-2 rounded">Enregistrer</a>
                         </div>
                     </div>
                 </div>
@@ -98,11 +111,12 @@ dd($conf);
                     <th class="w-1/12 pl-4 py-4 text-left">ID</th>
                     <th class="w-1/12 py-4 text-left">Date</th>
                     <th class="w-1/12 py-4 text-left">Qte</th>
-                    <th class="w-1/12 py-4 text-left">Prix</th>
                     <th class="w-1/12 py-4 text-left">Montant</th>
                     <th class="w-1/12 py-4 text-left">Observation</th>
                     <th class="w-1/12 py-4 text-left">Fournisseur</th>
+                    <th class="w-1/12 py-4 text-left">Tel</th>
                     <th class="w-1/12 py-4 text-left">Photo</th>
+                    <th class="w-1/12 py-4 text-left">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -113,20 +127,26 @@ dd($conf);
                         <td class="border-t-2 pl-4"><?= $counter ?></td>
                         <td class="border-t-2 py-2"><?= $value["date"] ?></td>
                         <td class="border-t-2 py-2"><?= $value["qteAppro"] ?></td>
-                        <td class="border-t-2 py-2"><?= $value["prixUnitaire"] ?></td>
                         <td class="border-t-2 py-2"><?= $value["montantAppro"] ?></td>
                         <td class="border-t-2 py-2" style="max-width: 30px; overflow: hidden;">
-                            <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="<?= htmlspecialchars($value["observation"] == 'null' ? '' : $value["observation"]) ?>">
-                                <?= $value["observation"] == 'null' ? '' : $value["observation"] ?>
+                            <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="<?= htmlspecialchars($value["observations"] == 'null' ? '' : $value["observations"]) ?>">
+                                <?= $value["observations"] == 'null' ? '' : $value["observations"] ?>
                             </div>
                         </td>
-                        <td class="border-t-2 py-2"><?= $value["nom"] ?></td>
+                        <td class="border-t-2 py-2"><?= $value["prenom"] ?> <?= $value["nom"] ?></td>
+                        <td class="border-t-2 py-2"><?= $value["tel"] ?></td>
                         <td class="border-t-2 w-fit py-2 mx-auto">
                             <img class="h-8 w-8 object-cover rounded-full shadow" src="<?= $value["photo"] == 'null' ? '' : WEBROOT . 'images/' . basename($value["photo"]) ?>" alt="Client">
+                        </td>
+                        <td class="border-t-2 py-2">
+                            <a href="<?= WEBROOT ?>?controller=rs&action=details-appro&idAppro=<?=$value["idAppro"]?>&idUser=<?=$value["idUser"]?>" class="btn background-color-sunglow border-color-sunglow p-2 mr-1 rounded">
+                                Voir Plus
+                            </a>
                         </td>
                     </tr>
                 <?php endforeach ?>
             </tbody>
+
         </table>
     </div>
 </div>

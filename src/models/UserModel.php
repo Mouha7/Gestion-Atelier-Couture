@@ -154,6 +154,6 @@ class UserModel extends Model
 
     public function findOne($value): array|false
     {
-        return $this->executeSelect("SELECT * FROM `$this->table` u, fournisseur f WHERE u.idUser=f.userId AND u.idUser=$value AND u.isDeleted='0';", true);
+        return $this->executeSelect("SELECT * FROM `$this->table` u WHERE u.idUser=$value AND u.isDeleted='0';", true);
     }
 }

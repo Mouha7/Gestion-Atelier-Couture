@@ -30,9 +30,9 @@ class ArticleModel extends Model
         return $this->executeSelect("SELECT * FROM `$this->table` a, articleVente v WHERE a.idArticle=v.articleId AND a.isDeleted='0';");
     }
 
-    public function findAllAppro(): array
+    public function findById(int $value): array|false
     {
-        return $this->executeSelect("SELECT * FROM `approvisionnement` a, `fournisseur` f, `utilisateur` u WHERE a.fournisseurId = f.idFour AND f.userId = u.idUser;");
+        return $this->executeSelect("SELECT * FROM `article` a, articleConfection c WHERE a.idArticle=$value AND c.articleId=$value;", true);
     }
     // End Find
 
