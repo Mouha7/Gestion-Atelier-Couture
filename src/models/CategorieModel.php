@@ -19,6 +19,18 @@ class CategorieModel extends Model
         return $this->executeSelect("SELECT * FROM `$this->table` c, type t WHERE c.typeId = t.idType;");
     }
 
+    public function findAllWithPag(int $page = 0, int $offset = OFFSET): array
+    {
+        $page *= $offset;
+        $result = $this->executeSelect("SELECT COUNT(*) as nbr FROM `$this->table`;", true);
+        $data =  $this->executeSelect("SELECT * FROM `$this->table` c, type t WHERE c.typeId = t.idType Limit $page,$offset;");
+        return [
+            "totalElements" => $result["nbr"],
+            "data" => $data,
+            "pages" => ceil($result["nbr"] / $offset)
+        ];
+    }
+
     public function save(array $data): void
     {
         extract($data);

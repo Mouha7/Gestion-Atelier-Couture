@@ -27,6 +27,9 @@ class VendeurController extends Controller
     {
         if (isset($_REQUEST["action"])) {
             if ($_REQUEST["action"] == "liste") {
+                if(isset($_REQUEST["page"])) {
+                    $this->list($_REQUEST["page"]);
+                }
                 $this->list();
             } elseif ($_REQUEST["action"] == "save-vendeur") {
                 unset($_REQUEST["action"]);
@@ -50,9 +53,9 @@ class VendeurController extends Controller
         }
     }
 
-    private function list()
+    private function list(int $page=0)
     {
-        $this->renderView("../views/vendeur/liste", ["array" => $this->userModel->findAllInterne(4)]);
+        $this->renderView("../views/vendeur/liste", ["array" => $this->userModel->findAllInterneWithPag(4, $page, OFFSET), "currentPage" => $page]);
     }
 
     private function store(array $data, array $files)

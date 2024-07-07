@@ -21,6 +21,18 @@ class ApproModel extends Model
         return $this->executeSelect("SELECT * FROM `approvisionnement` a, `utilisateur` u WHERE a.fournisseurId = u.idUser;");
     }
 
+    public function findAllWithPag(int $page = 0, int $offset = OFFSET): array
+    {
+        $page *= $offset;
+        $result = $this->executeSelect("SELECT COUNT(*) as nbr FROM `approvisionnement` a, `utilisateur` u WHERE a.fournisseurId = u.idUser;", true);
+        $data = $this->executeSelect("SELECT * FROM `approvisionnement` a, `utilisateur` u WHERE a.fournisseurId = u.idUser Limit $page,$offset;");
+        return [
+            "totalElements" => $result["nbr"],
+            "data" => $data,
+            "pages" => ceil($result["nbr"] / $offset)
+        ];
+    }
+
     public function save(PanierModel $data): void
     {
         $d = new \DateTime();
@@ -43,6 +55,11 @@ class ApproModel extends Model
     public function findArticleByAppro($value): array|false
     {
         return $this->executeSelect("SELECT * FROM `detail` d, `articleConfection` a WHERE d.`approId` = $value AND d.articleId = a.articleId;");
+    }
+
+    public function findArticleByProd($value): array|false
+    {
+        return $this->executeSelect("SELECT * FROM `detailVente` d, productionVente v, articleVente a WHERE d.venteId=$value AND d.prodId=v.idProd AND v.articleId = a.articleId;");
     }
 
     public function update(array $data): void

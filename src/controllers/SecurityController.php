@@ -61,6 +61,11 @@ class SecurityController extends Controller
                     $this->redirectToRouter("controller=rs&action=liste-appro");
                 } elseif ($userConnect["nomRole"] == 'RP') {
                     $this->redirectToRouter("controller=rp&action=liste-vente");
+                } elseif ($userConnect["nomRole"] == 'Vendeur') {
+                    $this->redirectToRouter("controller=vente&action=liste-vente");
+                } else {
+                    Validator::add("error_connection", "Utilisateur non enregistre!");
+                    Session::add("errors", Validator::$errors);
                 }
             } else {
                 Validator::add("error_connection", "Utilisateur introuvable!");

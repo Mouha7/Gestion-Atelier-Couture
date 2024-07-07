@@ -10,12 +10,12 @@ use Macbook\Core\Controller;
 use Macbook\Core\Autorisation;
 use Macbook\Models\ArticleModel;
 use Macbook\Models\UserModel;
-use Macbook\Models\VenteModel;
+use Macbook\Models\ProdVenteModel;
 
 class RpController extends Controller
 {
     private ArticleModel $articleModel;
-    private VenteModel $venteModel;
+    private ProdVenteModel $prodVenteModel;
     private UserModel $userModel;
     public function __construct()
     {
@@ -25,7 +25,7 @@ class RpController extends Controller
         }
         $this->userModel = new UserModel();
         $this->articleModel = new ArticleModel();
-        $this->venteModel = new VenteModel();
+        $this->prodVenteModel = new ProdVenteModel();
         $this->load();
     }
 
@@ -33,6 +33,9 @@ class RpController extends Controller
     {
         if (isset($_REQUEST["action"])) {
             if ($_REQUEST["action"] == "liste") {
+                if(isset($_REQUEST["page"])) {
+                    $this->list($_REQUEST["page"]);
+                }
                 $this->list();
             } elseif ($_REQUEST["action"] == "save-rp") {
                 unset($_REQUEST["action"]);
@@ -53,29 +56,32 @@ class RpController extends Controller
                 $this->modify($_REQUEST, $_FILES);
                 $this->redirectToRouter(LISTE);
             } elseif ($_REQUEST["action"] == "liste-vente") {
+                if (isset($_REQUEST["page"])) {
+                    $this->listVente($_REQUEST["page"]);
+                }
                 $this->listVente();
             } elseif ($_REQUEST["action"] == "save-vente") {
                 $this->saveVente($_REQUEST);
                 $this->redirectToRouter("controller=rp&action=liste-vente");
             } elseif ($_REQUEST["action"] == "details-vente") {
-                $this->details($_REQUEST);
+                $this->details($_REQUEST["idProd"]);
             }
         }
     }
 
-    private function list()
+    private function list(int $page=0)
     {
-        $this->renderView("../views/rp/liste", ["array" => $this->userModel->findAllInterne(3)]);
+        $this->renderView("../views/rp/liste", ["array" => $this->userModel->findAllInterneWithPag(3, $page, OFFSET), "currentPage" => $page]);
     }
 
-    private function listVente()
+    private function listVente(int $page=0)
     {
-        $this->renderView("../views/rp/liste.vente", ["array" => $this->venteModel->findAll(), "articles" => $this->articleModel->findAllVente()]);
+        $this->renderView("../views/rp/liste.vente", ["array" => $this->prodVenteModel->findAllWithPag($page, OFFSET), "currentPage" => $page, "articles" => $this->articleModel->findAllVente()]);
     }
 
     private function saveVente(array $data)
     {
-        $article = $this->venteModel->findArticleVente($data["idArticle"]);
+        $article = $this->prodVenteModel->findArticleVente($data["idArticle"]);
 
         if ($article["qteStock"] < $data["qteProd"]) {
             Validator::isEmpty($data["idArticle"], "article");
@@ -84,7 +90,7 @@ class RpController extends Controller
                 Session::add("errors", Validator::$errors);
             }
         } else {
-            $this->venteModel->save($data, $article);
+            $this->prodVenteModel->save($data, $article);
         }
     }
 
@@ -107,9 +113,9 @@ class RpController extends Controller
         }
     }
 
-    private function details($value)
+    private function details(int $value)
     {
-        $this->renderView("../views/rp/update", ["rp" => $this->userModel->findOne($value)]);
+        $this->renderView("../views/rp/details", ["value" => $this->prodVenteModel->findOne($value)]);
     }
 
     private function modify(array $data, array $files)

@@ -25,14 +25,50 @@ class UserModel extends Model
         return $this->executeSelect("SELECT * FROM `$this->table` u, fournisseur f WHERE u.idUser=f.userId AND u.isDeleted='0';");
     }
 
+    public function findAllFournisseurWithPag(int $page = 0, int $offset = OFFSET): array
+    {
+        $page *= $offset;
+        $result = $this->executeSelect("SELECT COUNT(*) as nbr FROM `$this->table` u, fournisseur f WHERE u.idUser=f.userId AND u.isDeleted='0';", true);
+        $data = $this->executeSelect("SELECT * FROM `$this->table` u, fournisseur f WHERE u.idUser=f.userId AND u.isDeleted='0' Limit $page,$offset;");
+        return [
+            "totalElements" => $result["nbr"],
+            "data" => $data,
+            "pages" => ceil($result["nbr"] / $offset)
+        ];
+    }
+    
     public function findAllClient(): array
     {
         return $this->executeSelect("SELECT * FROM `$this->table` u, client c WHERE u.idUser=c.userId AND u.isDeleted='0' AND u.roleId='5';");
     }
 
+    public function findAllClientWithPag(int $page = 0, int $offset = OFFSET): array
+    {
+        $page *= $offset;
+        $result = $this->executeSelect("SELECT COUNT(*) as nbr FROM `$this->table` u, client c WHERE u.idUser=c.userId AND u.isDeleted='0' AND u.roleId='5';", true);
+        $data = $this->executeSelect("SELECT * FROM `$this->table` u, client c WHERE u.idUser=c.userId AND u.isDeleted='0' AND u.roleId='5' Limit $page,$offset;");
+        return [
+            "totalElements" => $result["nbr"],
+            "data" => $data,
+            "pages" => ceil($result["nbr"] / $offset)
+        ];
+    }
+
     public function findAllInterne(int $role): array
     {
         return $this->executeSelect("SELECT * FROM `$this->table` u, utilisateurInterne c WHERE u.idUser=c.userId AND u.isDeleted='0' AND u.roleId='$role';");
+    }
+
+    public function findAllInterneWithPag(int $role, int $page = 0, int $offset = OFFSET): array
+    {
+        $page *= $offset;
+        $result = $this->executeSelect("SELECT COUNT(*) as nbr FROM `$this->table` u, utilisateurInterne c WHERE u.idUser=c.userId AND u.isDeleted='0' AND u.roleId='$role';", true);
+        $data = $this->executeSelect("SELECT * FROM `$this->table` u, utilisateurInterne c WHERE u.idUser=c.userId AND u.isDeleted='0' AND u.roleId='$role' Limit $page,$offset;");
+        return [
+            "totalElements" => $result["nbr"],
+            "data" => $data,
+            "pages" => ceil($result["nbr"] / $offset)
+        ];
     }
     // End Find
 

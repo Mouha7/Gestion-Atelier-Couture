@@ -35,6 +35,9 @@ class RsController extends Controller
     {
         if (isset($_REQUEST["action"])) {
             if ($_REQUEST["action"] == "liste") {
+                if(isset($_REQUEST["page"])) {
+                    $this->list($_REQUEST["page"]);
+                }
                 $this->list();
             } elseif ($_REQUEST["action"] == "save-rs") {
                 unset($_REQUEST["action"]);
@@ -53,6 +56,9 @@ class RsController extends Controller
                 $this->modify($_REQUEST, $_FILES);
                 $this->redirectToRouter(LISTE);
             } elseif ($_REQUEST["action"] == "liste-appro") {
+                if(isset($_REQUEST["page"])) {
+                    $this->listAppro($_REQUEST["page"]);
+                }
                 $this->listAppro();
             } elseif ($_REQUEST["action"] == "save-appro") {
                 $this->saveAppro();
@@ -62,18 +68,21 @@ class RsController extends Controller
                 $this->redirectToRouter("controller=rs&action=liste-appro");
             } elseif ($_REQUEST["action"] == "details-appro") {
                 $this->details($_REQUEST);
+            } elseif ($_REQUEST["action"] == "get-appro") {
+                $appros = $this->approModel->findAll();
+                parent::renderJson($appros);
             }
         }
     }
 
-    private function list()
+    private function list(int $page=0)
     {
-        $this->renderView("../views/rs/liste", ["array" => $this->userModel->findAllInterne(2)]);
+        $this->renderView("../views/rs/liste", ["array" => $this->userModel->findAllInterneWithPag(2, $page, OFFSET), "currentPage" => $page]);
     }
 
-    public function listAppro()
+    public function listAppro(int $page=0)
     {
-        $this->renderView("../views/rs/liste.appro", ["array" => $this->approModel->findAll(), "fours" => $this->userModel->findAllInterne(2), "conf" => $this->articleModel->findAllConfection()]);
+        $this->renderView("../views/rs/liste.appro", ["array" => $this->approModel->findAllWithPag($page, OFFSET), "currentPage" => $page, "fours" => $this->userModel->findAllInterne(2), "conf" => $this->articleModel->findAllConfection()]);
     }
 
     private function store(array $data, array $files)
@@ -106,7 +115,7 @@ class RsController extends Controller
     public function saveArticleInAppro(array $data)
     {
         if (!Session::get('panier')) {
-            $panier = new PanierModel;
+            $panier = new PanierModel();
         } else {
             $panier = Session::get('panier');
         }

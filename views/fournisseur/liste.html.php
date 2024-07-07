@@ -80,7 +80,7 @@ if (Session::get("errors")) {
             </thead>
             <tbody>
                 <?php $counter = 0; ?>
-                <?php foreach ($four_array as $value) : ?>
+                <?php foreach ($four_array["data"] as $value) : ?>
                     <?php $counter++ ?>
                     <tr>
                         <td class="border-t-2 pl-4"><?= $counter ?></td>
@@ -167,4 +167,11 @@ if (Session::get("errors")) {
         </table>
     </div>
 </div>
+<nav class="absolute bottom-5 left-1/2 transform -translate-x-1/2 bg-white text-indigo inline-flex justify-center items-center space-x-2 rounded-lg shadow py-1 px-2">
+    <a href="<?= WEBROOT ?>?controller=fournisseur&action=liste&page=<?= $currentPage == 0 ? $currentPage : ($currentPage - 1) ?>" class="px-3 py-2 rounded-lg hover:bg-gray-100">&lt;</a>
+    <?php for ($i = 0; $i < $four_array["pages"]; $i++) : ?>
+        <a href="<?= WEBROOT ?>?controller=fournisseur&action=liste&page=<?= $i ?>" class="px-3 py-2 rounded-lg hover:bg-gray-100 <?php if ($currentPage == $i) echo 'background-color-honeydew'; ?>"><?php echo $i + 1 ?></a>
+    <?php endfor ?>
+    <a href="<?= WEBROOT ?>?controller=fournisseur&action=liste&page=<?= $currentPage == ($four_array["pages"] - 1) ? ($four_array["pages"] - 1) : ($currentPage + 1) ?>" class="px-3 py-2 rounded-lg hover:bg-gray-100">&gt;</a>
+</nav>
 <?php Session::remove("errors"); ?>

@@ -4,27 +4,27 @@ namespace Macbook\Models;
 
 class PanierVenteModel
 {
-    public $fournisseur = null;
-    public array $articles = [];
+    public $client = null;
+    public array $data = [];
     public $total = 0;
     public $qte = 0;
     public string $observations = '';
 
-    public function addArticle($article, $fournisseur, $qteAppro, $obs)
+    public function addArticle($article, $client, $qteAppro, $obs)
     {
-        $montantArticle = $this->montantArticle($article['prixAchat'], $qteAppro);
+        $montantArticle = $this->montantArticle($article['prixVente'], $qteAppro);
         $key = $this->articleExist($article);
         if ($key != -1) {
-            $this->articles[$key]['qteAppro'] += $qteAppro;
-            $this->articles[$key]['montantArticle'] += $montantArticle;
+            $this->data[$key]['qteAppro'] += $qteAppro;
+            $this->data[$key]['montantArticle'] += $montantArticle;
         } else {
             $article['qteAppro'] = $qteAppro;
             $article['montantArticle'] = $montantArticle;
-            $this->articles[] = $article;
+            $this->data[] = $article;
         }
         $this->observations = $obs;
         $this->qte += $qteAppro;
-        $this->fournisseur = $fournisseur;
+        $this->client = $client;
         $this->total += $montantArticle;
     }
 
@@ -35,7 +35,7 @@ class PanierVenteModel
 
     public function articleExist($article): int
     {
-        foreach ($this->articles as $key => $value) {
+        foreach ($this->data as $key => $value) {
             if ($value["idArticle"] == $article["idArticle"]) {
                 return $key;
             }
@@ -45,8 +45,8 @@ class PanierVenteModel
 
     public function clearPanier(): void
     {
-        $this->articles = [];
-        $this->fournisseur = null;
+        $this->data = [];
+        $this->client = null;
         $this->qte = 0;
         $this->total = 0;
         $this->observations = '';

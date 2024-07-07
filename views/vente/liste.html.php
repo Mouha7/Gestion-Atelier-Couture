@@ -39,10 +39,6 @@ if (Session::get("errors")) {
                                 <label for="qteStock" class="block text-sm font-medium color-indigo">Quantité Stock</label>
                                 <input type="number" id="qteStock" name="qteStock" class="mt-1 p-2 border rounded w-full" required/>
                             </div>
-                            <!-- <div class="mb-3">
-                                <label for="montantVente" class="block text-sm font-medium color-indigo">Montant Vente</label>
-                                <input type="number" id="montantVente" name="montantVente" class="mt-1 p-2 border rounded w-full" required/>
-                            </div> -->
                             <div class="mb-3">
                                 <label for="photo" class="block text-sm font-medium color-indigo">Photo</label>
                                 <input type="file" id="photo" name="photo" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100" />
@@ -75,7 +71,7 @@ if (Session::get("errors")) {
             </thead>
             <tbody>
                 <?php $counter = 0; ?>
-                <?php foreach ($array as $value) : ?>
+                <?php foreach ($array["data"] as $value) : ?>
                     <?php $counter++ ?>
                     <tr>
                         <td class="border-t-2 pl-4"><?= $counter ?></td>
@@ -153,4 +149,11 @@ if (Session::get("errors")) {
         </table>
     </div>
 </div>
+<nav class="absolute bottom-5 left-1/2 transform -translate-x-1/2 bg-white text-indigo inline-flex justify-center items-center space-x-2 rounded-lg shadow py-1 px-2">
+    <a href="<?= WEBROOT ?>?controller=vente&action=liste&page=<?= $currentPage == 0 ? $currentPage : ($currentPage - 1) ?>" class="px-3 py-2 rounded-lg hover:bg-gray-100">&lt;</a>
+    <?php for ($i = 0; $i < $array["pages"]; $i++) : ?>
+        <a href="<?= WEBROOT ?>?controller=vente&action=liste&page=<?= $i ?>" class="px-3 py-2 rounded-lg hover:bg-gray-100 <?php if ($currentPage == $i) echo 'background-color-honeydew'; ?>"><?php echo $i + 1 ?></a>
+    <?php endfor ?>
+    <a href="<?= WEBROOT ?>?controller=vente&action=liste&page=<?= $currentPage == ($array["pages"] - 1) ? ($array["pages"] - 1) : ($currentPage + 1) ?>" class="px-3 py-2 rounded-lg hover:bg-gray-100">&gt;</a>
+</nav>
 <?php Session::remove("errors"); ?>

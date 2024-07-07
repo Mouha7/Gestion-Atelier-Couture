@@ -31,10 +31,11 @@ class CategorieController extends Controller
     {
         if (isset($_REQUEST["action"])) {
             if ($_REQUEST["action"] == "liste") {
+                if(isset($_REQUEST["page"])) {
+                    $this->listCategorie($_REQUEST["page"]);
+                }
                 $this->listCategorie();
             } elseif ($_REQUEST["action"] == "save-categorie") {
-                unset($_REQUEST["action"]);
-                unset($_REQUEST["controller"]);
                 $this->store($_REQUEST);
                 $this->redirectToRouter(LISTE);
             } elseif ($_REQUEST["action"] == "archive-categorie") {
@@ -46,17 +47,15 @@ class CategorieController extends Controller
             } elseif ($_REQUEST["action"] == "detail-categorie") {
                 $this->details($_REQUEST["idCategorie"]);
             } elseif ($_REQUEST["action"] == "update-categorie") {
-                unset($_REQUEST["action"]);
-                unset($_REQUEST["controller"]);
                 $this->modify($_REQUEST);
                 $this->redirectToRouter(LISTE);
             }
         }
     }
 
-    private function listCategorie()
+    private function listCategorie(int $page=0)
     {
-        $this->renderView("../views/categories/liste", ["categorie_array" => $this->categorieModel->findAll(), "type_array" => $this->typeModel->findAll()]);
+        $this->renderView("../views/categories/liste", ["categorie_array" => $this->categorieModel->findAllWithPag($page, OFFSET), "currentPage" => $page, "type_array" => $this->typeModel->findAll()]);
     }
 
     private function store(array $data)

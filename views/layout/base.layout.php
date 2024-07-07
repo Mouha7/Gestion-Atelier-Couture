@@ -1,5 +1,6 @@
 <?php
 
+use Macbook\Core\Autorisation;
 use Macbook\Core\Session;
 
 $userConnect = Session::get("userConnect");
@@ -37,56 +38,63 @@ if (Session::get("errors")) {
             <nav class="w-full md:w-1/4 lg:w-1/5 sidebar background-color-indigo">
                 <div class="flex flex-col justify-between h-full" style="height: 95vh;">
                     <div>
+                        <a href="<?=WEBROOT ?><?=route_logo()?>">
                         <img src="<?= WEBROOT ?>images/Royal Tailor - White.png" alt="Royal Tailor" class="w-full">
+                        </a>
                     </div>
                     <ul class="flex flex-col space-y-4">
                         <li class="<?= add_class_hidden_lien('Admin') ?>">
-                            <a class="flex pl-5 gap-2 items-center color-honeydew" href="<?= WEBROOT ?>?controller=categorie&action=liste">
+                            <a class="flex pl-5 gap-2 items-center color-honeydew" href="<?= WEBROOT ?>?controller=categorie&action=liste&page=0">
                                 <img src="<?= WEBROOT ?>icons/category.svg" alt="Logo Catégorie">Catégorie
                             </a>
                         </li>
                         <li class="<?= add_class_hidden_lien('Admin') ?>">
-                            <a class="flex pl-5 gap-2 items-center color-honeydew" href="<?= WEBROOT ?>?controller=fournisseur&action=liste">
+                            <a class="flex pl-5 gap-2 items-center color-honeydew" href="<?= WEBROOT ?>?controller=fournisseur&action=liste&page=0">
                                 <img src="<?= WEBROOT ?>icons/truck.svg" alt="Logo Truck">Fournisseur
                             </a>
                         </li>
                         <li class="<?= add_class_hidden_lien('Admin') ?>">
-                            <a class="flex pl-5 gap-2 items-center color-honeydew" href="<?= WEBROOT ?>?controller=client&action=liste">
+                            <a class="flex pl-5 gap-2 items-center color-honeydew" href="<?= WEBROOT ?>?controller=client&action=liste&page=0">
                                 <img src="<?= WEBROOT ?>icons/customer.svg" alt="Logo Customer">Client
                             </a>
                         </li>
                         <li class="<?= add_class_hidden_lien('Admin') ?>">
-                            <a class="flex pl-5 gap-2 items-center color-honeydew" href="<?= WEBROOT ?>?controller=rs&action=liste">
+                            <a class="flex pl-5 gap-2 items-center color-honeydew" href="<?= WEBROOT ?>?controller=rs&action=liste&page=0">
                                 <img src="<?= WEBROOT ?>icons/stock.svg" alt="Logo Stock">Responsable Stock
                             </a>
                         </li>
                         <li class="<?= add_class_hidden_lien('Admin') ?>">
-                            <a class="flex pl-5 gap-2 items-center color-honeydew" href="<?= WEBROOT ?>?controller=rp&action=liste">
+                            <a class="flex pl-5 gap-2 items-center color-honeydew" href="<?= WEBROOT ?>?controller=rp&action=liste&page=0">
                                 <img src="<?= WEBROOT ?>icons/product.svg" alt="Logo Product">Responsable Production
                             </a>
                         </li>
                         <li class="<?= add_class_hidden_lien('Admin') ?>">
-                            <a class="flex pl-5 gap-2 items-center color-honeydew" href="<?= WEBROOT ?>?controller=vendeur&action=liste">
+                            <a class="flex pl-5 gap-2 items-center color-honeydew" href="<?= WEBROOT ?>?controller=vendeur&action=liste&page=0">
                                 <img src="<?= WEBROOT ?>icons/carbon-sales.svg" alt="Logo Product">Vendeur
                             </a>
                         </li>
                         <li class="<?= add_class_hidden_lien('Admin') ?>">
-                            <a class="flex pl-5 gap-2 items-center color-honeydew" href="<?= WEBROOT ?>?controller=confection&action=liste">
+                            <a class="flex pl-5 gap-2 items-center color-honeydew" href="<?= WEBROOT ?>?controller=confection&action=liste&page=0">
                                 <img src="<?= WEBROOT ?>icons/article.svg" alt="Logo Craft Article">Article Confection
                             </a>
                         </li>
                         <li class="<?= add_class_hidden_lien('RS') ?>">
-                            <a class="flex pl-5 gap-2 items-center color-honeydew" href="<?= WEBROOT ?>?controller=rs&action=liste-appro">
+                            <a class="flex pl-5 gap-2 items-center color-honeydew" href="<?= WEBROOT ?>?controller=rs&action=liste-appro&page=0">
                                 <img src="<?= WEBROOT ?>icons/article.svg" alt="Logo Craft Article">Approvisionnement Article
                             </a>
                         </li>
                         <li class="<?= add_class_hidden_lien('Admin') ?>">
-                            <a class="flex pl-5 gap-2 items-center color-honeydew" href="<?= WEBROOT ?>?controller=vente&action=liste">
+                            <a class="flex pl-5 gap-2 items-center color-honeydew" href="<?= WEBROOT ?>?controller=vente&action=liste&page=0">
                                 <img src="<?= WEBROOT ?>icons/article-check.svg" alt="Logo Article">Article Vente
                             </a>
                         </li>
+                        <li class="<?= add_class_hidden_lien('Vendeur') ?>">
+                            <a class="flex pl-5 gap-2 items-center color-honeydew" href="<?= WEBROOT ?>?controller=vente&action=liste-vente&page=0">
+                                <img src="<?= WEBROOT ?>icons/article-check.svg" alt="Logo Article">Production Article Vente
+                            </a>
+                        </li>
                         <li class="<?= add_class_hidden_lien('RP') ?>">
-                            <a class="flex pl-5 gap-2 items-center color-honeydew" href="<?= WEBROOT ?>?controller=vente&action=liste">
+                            <a class="flex pl-5 gap-2 items-center color-honeydew" href="<?= WEBROOT ?>?controller=vente&action=liste&page=0">
                                 <img src="<?= WEBROOT ?>icons/article-check.svg" alt="Logo Article">Production Article Vente
                             </a>
                         </li>
@@ -184,14 +192,14 @@ if (Session::get("errors")) {
                         </a>
                         <div class="profile flex items-center pl-5 gap-2 w-full">
                             <img src="<?= WEBROOT ?>images/default.png" alt="Default profile" class="w-8 rounded-full">
-                            <p class="color-honeydew ml-2 mb-0"><?= $userConnect["nom"]; ?></p>
+                            <p class="color-honeydew ml-2 mb-0"><?= $userConnect["prenom"] ?> <?= $userConnect["nom"] ?></p>
                         </div>
                     </div>
                 </div>
             </nav>
 
             <!-- Contenu principal -->
-            <main class="w-full md:w-3/4 lg:w-4/5 px-4 py-2 background-color-honeydew color-indigo">
+            <main class="w-full md:w-3/4 lg:w-4/5 px-4 py-2 background-color-honeydew color-indigo relative">
                 <?= $content_view ?>
             </main>
         </div>

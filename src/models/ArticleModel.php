@@ -25,9 +25,33 @@ class ArticleModel extends Model
         return $this->executeSelect("SELECT * FROM `$this->table` a, articleConfection c WHERE a.idArticle=c.articleId AND a.isDeleted='0';");
     }
 
+    public function findAllConfectionWithPag(int $page = 0, int $offset = OFFSET): array
+    {
+        $page *= $offset;
+        $result = $this->executeSelect("SELECT COUNT(*) as nbr FROM `$this->table` a, articleConfection c WHERE a.idArticle=c.articleId AND a.isDeleted='0';", true);
+        $data = $this->executeSelect("SELECT * FROM `$this->table` a, articleConfection c WHERE a.idArticle=c.articleId AND a.isDeleted='0'  Limit $page,$offset;");
+        return [
+            "totalElements" => $result["nbr"],
+            "data" => $data,
+            "pages" => ceil($result["nbr"] / $offset)
+        ];
+    }
+
     public function findAllVente(): array
     {
         return $this->executeSelect("SELECT * FROM `$this->table` a, articleVente v WHERE a.idArticle=v.articleId AND a.isDeleted='0';");
+    }
+
+    public function findAllVenteWithPag(int $page = 0, int $offset = OFFSET): array
+    {
+        $page *= $offset;
+        $result = $this->executeSelect("SELECT COUNT(*) as nbr FROM `$this->table` a, articleVente v WHERE a.idArticle=v.articleId AND a.isDeleted='0';", true);
+        $data = $this->executeSelect("SELECT * FROM `$this->table` a, articleVente v WHERE a.idArticle=v.articleId AND a.isDeleted='0' Limit $page,$offset;");
+        return [
+            "totalElements" => $result["nbr"],
+            "data" => $data,
+            "pages" => ceil($result["nbr"] / $offset)
+        ];
     }
 
     public function findById(int $value): array|false

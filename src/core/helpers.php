@@ -28,3 +28,15 @@ function dump(mixed $data) {
     var_dump($data);
     echo "</pre>";
 }
+
+function route_logo() {
+    if (Autorisation::hasRole("Admin")) {
+        echo "?controller=categorie&action=liste";
+    } elseif (Autorisation::hasRole("RS")) {
+        echo "?controller=rs&action=liste-appro";
+    } elseif (Autorisation::hasRole("RP")) {
+        echo "?controller=rp&action=liste-vente";
+    } elseif (Autorisation::hasRole("Vendeur")) {
+        echo "?controller=vente&action=liste-vente";
+    }
+}

@@ -27,6 +27,9 @@ class ClientController extends Controller
     {
         if (isset($_REQUEST["action"])) {
             if ($_REQUEST["action"] == "liste") {
+                if(isset($_REQUEST["page"])) {
+                    $this->list($_REQUEST["page"]);
+                }
                 $this->list();
             } elseif ($_REQUEST["action"] == "save-client") {
                 unset($_REQUEST["action"]);
@@ -50,9 +53,9 @@ class ClientController extends Controller
         }
     }
 
-    private function list()
+    private function list(int $page=0)
     {
-        $this->renderView("../views/client/liste", ["array" => $this->userModel->findAllClient()]);
+        $this->renderView("../views/client/liste", ["array" => $this->userModel->findAllClientWithPag($page, OFFSET), "currentPage" => $page]);
     }
 
     private function store(array $data, array $files)

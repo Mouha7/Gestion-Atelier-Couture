@@ -4,7 +4,6 @@ namespace Macbook\Models;
 
 use Macbook\Core\Model;
 use Macbook\Core\Session;
-use Macbook\Models\PanierModel;
 
 
 
@@ -13,46 +12,39 @@ class VenteModel extends Model
     public function __construct()
     {
         $this->getConnexion();
-        $this->table = "productionVente";
+        $this->table = "vente";
     }
 
     public function findAll(): array
     {
-        return $this->executeSelect("SELECT * FROM `$this->table` t, `article` a WHERE t.articleId = a.idArticle;");
+        return $this->executeSelect("SELECT * FROM `$this->table` t, utilisateur u WHERE t.clientId = u.idUser;");
     }
 
-    public function save(array $data, array $article): void
+    public function findAllWithPag(int $page = 0, int $offset = OFFSET): array
     {
-        extract($data);
+        $page *= $offset;
+        $result = $this->executeSelect("SELECT COUNT(*) as nbr FROM `$this->table` t, utilisateur u WHERE t.clientId = u.idUser;", true);
+        $data = $this->executeSelect("SELECT * FROM `$this->table` t, utilisateur u WHERE t.clientId = u.idUser Limit $page,$offset;");
+        return [
+            "totalElements" => $result["nbr"],
+            "data" => $data,
+            "pages" => ceil($result["nbr"] / $offset)
+        ];
+    }
+
+    public function save(PanierVenteModel $data): void
+    {
         $d = new \DateTime();
         $date = $d->format("Y-m-d");
         $userId = Session::get('userConnect')['idUser'];
-        $idProd = $article["idVente"];
-        $nouvelleQteStock = $article['qteStock'] - $qteProd;
-        $this->executeUpdate("INSERT INTO `$this->table` (`date`, `qteProd`, `observations`, `articleId`, `userId`) VALUES ('$date', '$qteProd', '$observations', '$idArticle', '$userId');");
-        $this->executeUpdate("UPDATE articleVente SET qteStock = $nouvelleQteStock WHERE idVente = $idProd;");
-    }
-
-    public function findArticleVente($value): array|false
-    {
-        return $this->executeSelect("SELECT * FROM `articleVente` a WHERE a.`articleId` = $value;", true);
-    }
-
-    public function update(array $data): void
-    {
-        extract($data);
-        $this->executeUpdate("UPDATE `categorie` t SET `nomCategorie` = '$nomCategorie', `typeId` = '$typeId' WHERE t.idCategorie = $idCategorie");
-    }
-
-    public function delete($value): void
-    {
-        $this->executeUpdate("DELETE FROM categorie WHERE `categorie`.`idCategorie` = $value");
-    }
-
-    public function archived($data): void
-    {
-        extract($data);
-        $isActif == 1 ? $isActif = 0 : $isActif = 1;
-        $this->executeUpdate("UPDATE `categorie` t SET `isActif` = '$isActif' WHERE t.idCategorie = $idCategorie");
+        $lastId = $this->executeUpdate("INSERT INTO `$this->table` (`dateVente`, `qteVente`, `montantVente`, `observations`, `clientId`, `userId`) VALUES ('$date', '$data->qte', '$data->total', '$data->observations', '$data->client', '$userId');");
+        foreach ($data->data as $value) {
+            $montantVente = $value['montantVente'];
+            $idProd = $value['idProd'];
+            $qteAppro = $value['qteAppro'];
+            $qteProd = $value['qteProd'] - $qteAppro;
+            $this->executeUpdate("INSERT INTO `detailVente` (`qteVente`, `montantVente`, `prodId`, `venteId`) VALUES ('$qteProd', '$montantVente', '$idProd', '$lastId');");
+            $this->executeUpdate("UPDATE `productionVente` SET `qteProd` = '$qteProd' WHERE `productionVente`.`idProd` = '$idProd';");
+        }
     }
 }

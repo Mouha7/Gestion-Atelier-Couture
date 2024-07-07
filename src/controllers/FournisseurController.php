@@ -27,6 +27,9 @@ class FournisseurController extends Controller
     {
         if (isset($_REQUEST["action"])) {
             if ($_REQUEST["action"] == "liste") {
+                if(isset($_REQUEST["page"])) {
+                    $this->list($_REQUEST["page"]);
+                }
                 $this->list();
             } elseif ($_REQUEST["action"] == "save-fournisseur") {
                 unset($_REQUEST["action"]);
@@ -50,9 +53,9 @@ class FournisseurController extends Controller
         }
     }
 
-    private function list()
+    private function list(int $page=0)
     {
-        $this->renderView("../views/fournisseur/liste", ["four_array" => $this->userModel->findAllFournisseur()]);
+        $this->renderView("../views/fournisseur/liste", ["four_array" => $this->userModel->findAllFournisseurWithPag($page, OFFSET), "currentPage" => $page]);
     }
 
     private function store(array $data, array $files)
