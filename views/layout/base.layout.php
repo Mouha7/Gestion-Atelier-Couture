@@ -109,7 +109,7 @@ if (Session::get("errors")) {
                                     Profile
                                 </button>
                                 <!-- Modal -->
-                                <div id="modalProfile" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hide">
+                                <div id="modalProfile" class="z-10 fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hide">
                                     <div class="bg-white rounded-lg shadow-lg w-1/3 max-h-[90vh] flex flex-col">
                                         <div class="flex justify-between items-center border-b p-4">
                                             <h2 class="color-indigo text-lg font-semibold">Panneau de configuration</h2>

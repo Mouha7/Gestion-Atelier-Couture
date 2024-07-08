@@ -63,7 +63,7 @@ if (Session::get("errors")) {
                             </button>
                             <!-- Modal -->
                             <div id="modal-<?= $counter ?>" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hide">
-                                <div class="bg-white rounded-lg shadow-lg w-1/3">
+                                <div class="bg-white rounded-lg shadow-lg w-1/3 z-10">
                                     <div class="flex justify-between items-center border-b p-4">
                                         <h1 class="text-lg font-semibold">Modifier catégorie</h1>
                                         <button type="button" class="text-gray-500 hover:text-gray-700" onclick="closeModal('modal-<?= $counter ?>')">&times;</button>

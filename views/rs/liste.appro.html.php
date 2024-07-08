@@ -15,7 +15,7 @@ if (Session::get("errors")) {
     <div class="w-full mb-3">
         <div class="w-full p-4 flex justify-end items-center bg-white shadow rounded">
             <!-- Button to open modal -->
-            <button type="button" class="btn background-color-indigo text-white p-2 rounded" onclick="openModal('modal')">
+            <button type="button" class="z-10 btn background-color-indigo text-white p-2 rounded" onclick="openModal('modal')">
                 Nouveau
             </button>
             <!-- Modal -->

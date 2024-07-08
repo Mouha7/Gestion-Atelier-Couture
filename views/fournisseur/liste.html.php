@@ -19,7 +19,7 @@ if (Session::get("errors")) {
                 Nouveau
             </button>
             <!-- Modal -->
-            <div id="modal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hide">
+            <div id="modal" class="z-10 fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hide">
                 <div class="bg-white rounded-lg shadow-lg w-1/3">
                     <div class="flex justify-between items-center border-b p-4">
                         <h1 class="text-lg font-semibold">Ajouter Fournisseur</h1>
@@ -102,7 +102,7 @@ if (Session::get("errors")) {
                                 Modifier
                             </button>
                             <!-- Modal -->
-                            <div id="modal-<?= $counter ?>" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hide">
+                            <div id="modal-<?= $counter ?>" class="z-10 fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hide">
                                 <div class="bg-white rounded-lg shadow-lg w-1/3 max-h-[90vh] flex flex-col">
                                     <div class="flex justify-between items-center border-b p-4">
                                         <h1 class="text-lg font-semibold">Modifier Fournisseur</h1>

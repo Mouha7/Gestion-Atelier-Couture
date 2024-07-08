@@ -19,7 +19,7 @@ if (Session::get("errors")) {
                 Nouveau
             </button>
             <!-- Modal -->
-            <div id="modal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hide">
+            <div id="modal" class="z-10 fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hide">
                 <div class="bg-white rounded-lg shadow-lg w-1/3 max-h-[90vh] flex flex-col">
                     <div class="flex justify-between items-center border-b p-4">
                         <h1 class="text-lg font-semibold">Ajouter Article de Confection</h1>
@@ -39,14 +39,6 @@ if (Session::get("errors")) {
                                 <label for="qteAchat" class="block text-sm font-medium color-indigo">Quantité Achat</label>
                                 <input type="number" id="qteAchat" name="qteAchat" class="mt-1 p-2 border rounded w-full" required/>
                             </div>
-                            <!-- <div class="mb-3">
-                                <label for="qteStock" class="block text-sm font-medium color-indigo">Quantité Stock</label>
-                                <input type="number" id="qteStock" name="qteStock" class="mt-1 p-2 border rounded w-full" required/>
-                            </div> -->
-                            <!-- <div class="mb-3">
-                                <label for="montantStock" class="block text-sm font-medium color-indigo">Montant Stock</label>
-                                <input type="number" id="montantStock" name="montantStock" class="mt-1 p-2 border rounded w-full" required/>
-                            </div> -->
                             <div class="mb-3">
                                 <label for="photo" class="block text-sm font-medium color-indigo">Photo</label>
                                 <input type="file" id="photo" name="photo" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100" />
@@ -102,7 +94,7 @@ if (Session::get("errors")) {
                                 Modifier
                             </button>
                             <!-- Modal -->
-                            <div id="modal-<?= $counter ?>" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hide">
+                            <div id="modal-<?= $counter ?>" class="z-10 fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hide">
                                 <div class="bg-white rounded-lg shadow-lg w-1/3 max-h-[90vh] flex flex-col">
                                     <div class="flex justify-between items-center border-b p-4">
                                         <h1 class="text-lg font-semibold">Modifier Article de Confection</h1>
